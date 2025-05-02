@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url("{{ url_for('static', filename='health-still-life-with-copy-space.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        select, button {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #output {
+            margin-top: 20px;
+            text-align: left;
+            padding: 10px;
+            background: #fff;
+            color: #01535a;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        async function getRecommendations() {
+            const surgery = document.getElementById("surgery").value;
+            const location = document.getElementById("location").value;
+
+            const response = await fetch("/recommend", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ surgery, location })
+            });
+
+            const result = await response.json();
+            let output = "<h2>Recommended Hospitals</h2><ul>";
+            result.forEach(hospital => {
+                output += `<li><strong>${hospital["Hospital Name"]}</strong>, Rating: ${hospital["Hospital Ratings"]}, Cost: ${hospital["Charges"]}</li>`;
+            });
+            output += "</ul>";
+            document.getElementById("output").innerHTML = output;
+        }
+    </script>
+</head>
+<body>
+    <h1 style="text-align: center; color : #01535a; font-size: 42px; margin-top: 70px; margin-left: 50px; margin-bottom: 30px;">
+        Better Hospitals, Better Care, Better Life
+    </h1>
+    <p style="text-align: center; color: #000000; font-size: 18px; max-width: 700px; margin: auto; margin-top: 40px; ">
+        Search and discover top-rated hospitals based on your medical condition. Get personalized recommendations to ensure the best care for you and your loved ones.
+    </p>
+    
+    <div class="container">
+        <h1 style ="color: #336D82;">Find the Best Hospital</h1>
+        
+        <label>Disease</label>
+        <select id="surgery">
+            <option value="Angioplasty">Angioplasty</option>
+            <option value="Appendix Surgery">Appendix Surgery</option>
+            <option value="Brain Surgery">Brain Surgery</option>
+            <option value="C-Section Delivery">C-Section Delivery</option>
+            <option value="Chemotherapy">Chemotherapy</option>
+            <option value="Child Vaccination">Child Vaccination</option>
+            <option value="Ear Surgery">Ear Surgery</option>
+            <option value="Heart Bypass Surgery">Heart Bypass Surgery</option>
+            <option value="Knee Replacement">Knee Replacement</option>
+            <option value="Skin Treatment">Skin Treatment</option>
+        </select>
+        <br><br>
+
+        <label for="location">Location:
+        <select id="location">
+            <option value="Guntur">Guntur</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Kakinada">Kakinada</option>
+            <option value="Nellore">Nellore</option>
+            <option value="Rajahmundry">Rajahmundry</option>
+            <option value="Tirupati">Tirupati</option>
+            <option value="Vijayawada">Vijayawada</option>
+            <option value="Visakhapatnam">Visakhapatnam</option>
+        </select>
+        <br><br>
+
+        <button onclick="getRecommendations()" style="background-color: #336D82">Search</button>
+        
+        <div id="output"></div>
+    </div>
+</body>
+</html>
